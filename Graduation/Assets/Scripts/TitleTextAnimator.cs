@@ -8,7 +8,7 @@ public class TitleTextAnimator : MonoBehaviour
     public float characterDelay = 0.15f;
 
     private const string fullText =
-        "<color=red>Dog</color> <color=white>And</color> <color=blue>Bear</color>";
+        "<color=red>Treasure</color> <color=blue>Chest</color>";
 
     private void OnEnable()
     {
@@ -26,9 +26,8 @@ public class TitleTextAnimator : MonoBehaviour
         // 리치 텍스트 태그를 글자로 출력하지 않고, 표시할 글자만 한 글자씩 추가
         string[] pieces =
         {
-            "<color=red>Dog</color>",
-            "<color=white> And </color>",
-            "<color=blue>Bear</color>"
+            "<color=red>Treasure</color>",
+            "<color=blue>Chest</color>"
         };
 
         foreach (string piece in pieces)

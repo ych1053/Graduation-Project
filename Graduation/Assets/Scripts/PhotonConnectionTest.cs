@@ -4,84 +4,85 @@ using UnityEngine;
 
 public class PhotonConnectionTest : MonoBehaviourPunCallbacks
 {
-    private const string TestRoomName = "DogAndBear_TestRoom";
-    private bool roomRequestSent;
+    private bool lobbyJoinRequested;
 
     private void Start()
     {
+        // 이미 로비에 있으면 다시 접속하지 않음
+        if (PhotonNetwork.InLobby)
+        {
+            Debug.Log("이미 Photon 로비에 접속해 있습니다.");
+            return;
+        }
+
+        // 이미 방에 들어간 상태라면 로비 접속을 시도하지 않음
         if (PhotonNetwork.InRoom)
         {
-            ShowRoomInfo();
+            Debug.Log("이미 Photon 방에 들어가 있습니다.");
+            return;
         }
-        else if (PhotonNetwork.IsConnectedAndReady)
+
+        // Photon에 연결되어 있으면 로비 입장만 요청
+        if (PhotonNetwork.IsConnectedAndReady)
         {
-            JoinTestRoom();
+            JoinDefaultLobby();
+            return;
         }
-        else
+
+        // 연결되어 있지 않을 때만 Photon 접속
+        if (!PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.ConnectUsingSettings();
+            Debug.Log("Photon Cloud 접속을 요청합니다.");
+
+            bool connectStarted = PhotonNetwork.ConnectUsingSettings();
+
+            if (!connectStarted)
+            {
+                Debug.LogError("Photon 접속 요청을 시작하지 못했습니다.");
+            }
         }
     }
 
     public override void OnConnectedToMaster()
     {
         Debug.Log("Photon Cloud 연결 성공");
-        JoinTestRoom();
+        JoinDefaultLobby();
     }
 
-    private void JoinTestRoom()
+    private void JoinDefaultLobby()
     {
-        if (roomRequestSent || PhotonNetwork.InRoom)
+        if (PhotonNetwork.InLobby || lobbyJoinRequested)
             return;
 
-        roomRequestSent = true;
+        lobbyJoinRequested = true;
 
-        RoomOptions options = new RoomOptions
+        // JoinLobby 요청이 접수됐는지 확인
+        bool requestAccepted =
+            PhotonNetwork.JoinLobby(TypedLobby.Default);
+
+        if (!requestAccepted)
         {
-            MaxPlayers = 2
-        };
-
-        PhotonNetwork.JoinOrCreateRoom(
-            TestRoomName,
-            options,
-            TypedLobby.Default
-        );
+            lobbyJoinRequested = false;
+            Debug.LogError(
+                "로비 입장 요청이 접수되지 않았습니다. Photon 연결 상태를 확인하세요."
+            );
+        }
     }
 
-    public override void OnJoinedRoom()
+    public override void OnJoinedLobby()
     {
-        ShowRoomInfo();
+        lobbyJoinRequested = false;
+        Debug.Log("Photon 기본 로비 입장 성공");
     }
 
-    public override void OnPlayerEnteredRoom(Player newPlayer)
+    public override void OnLeftLobby()
     {
-        Debug.Log(newPlayer.NickName + "님이 테스트 방에 들어왔어요.");
-        ShowRoomInfo();
-    }
-
-    private void ShowRoomInfo()
-    {
-        Debug.Log(
-            "방 입장 성공: " +
-            PhotonNetwork.CurrentRoom.Name +
-            " / 인원 " +
-            PhotonNetwork.CurrentRoom.PlayerCount +
-            "/2"
-        );
-    }
-
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        Debug.LogError("방 입장 실패: " + message);
-    }
-
-    public override void OnCreateRoomFailed(short returnCode, string message)
-    {
-        Debug.LogError("방 생성 실패: " + message);
+        Debug.Log("Photon 로비에서 나왔습니다.");
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        Debug.LogError("Photon 연결 종료: " + cause);
+        lobbyJoinRequested = false;
+        Debug.LogWarning("Photon 연결 종료: " + cause);
     }
 }

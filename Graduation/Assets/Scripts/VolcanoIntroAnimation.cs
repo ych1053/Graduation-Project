@@ -16,11 +16,11 @@ public class VolcanoIntroAnimation : MonoBehaviour
     [Range(0f, 1f)] public float soundVolume = 0.8f;
 
     [Header("연출 설정")]
-    public float launchDelay = 0.8f;
-    public float flightDuration = 1.3f;
+    public float launchDelay = 0.7f;
+    public float flightDuration = 1.8f;
     public Vector2 volcanoPosition = new Vector2(300f, 270f);
     public Vector2 centerPosition = new Vector2(0f, -10f);
-    public Vector2 finalArtSize = new Vector2(850f, 650f);
+    public Vector2 finalArtSize = new Vector2(1990f, 1820f);
 
     private AudioSource audioSource;
     private bool canContinue;
@@ -89,7 +89,7 @@ public class VolcanoIntroAnimation : MonoBehaviour
 
     private void Update()
     {
-        if (!canContinue || !Input.anyKeyDown)
+        if (!canContinue || !Input.GetKeyDown(KeyCode.F))
             return;
 
         canContinue = false;
