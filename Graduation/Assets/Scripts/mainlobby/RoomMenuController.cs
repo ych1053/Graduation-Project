@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class RoomMenuController : MonoBehaviourPunCallbacks
 {
+    private bool roomRequestPending;//새로추가했음
+
     public TMP_InputField roomNameInput;
     public TMP_InputField nicknameInput;
     public TMP_Text statusText;
@@ -34,7 +36,7 @@ public class RoomMenuController : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.NickName = nickname;
-        statusText.text = "닉네임 설정: " + nickname;
+        //statusText.text = "닉네임 설정: " + nickname;
     }
 
     public void CreateRoom()
@@ -82,8 +84,22 @@ public class RoomMenuController : MonoBehaviourPunCallbacks
 
     public void JoinSelectedRoom(string roomName)
     {
+        /*if (!CheckNickname()) return;
+
+        statusText.text = "방에 입장하는 중...";
+        PhotonNetwork.JoinRoom(roomName);*/
+        if (roomRequestPending)
+            return;
+
+        if (!PhotonNetwork.InLobby || PhotonNetwork.InRoom)
+        {
+            statusText.text = "로비 연결 또는 방 입장을 기다려 주세요.";
+            return;
+        }
+
         if (!CheckNickname()) return;
 
+        roomRequestPending = true;
         statusText.text = "방에 입장하는 중...";
         PhotonNetwork.JoinRoom(roomName);
     }
@@ -137,6 +153,13 @@ public class RoomMenuController : MonoBehaviourPunCallbacks
         statusText.text =
             "입장 완료: " + PhotonNetwork.CurrentRoom.Name +
             " (" + PhotonNetwork.CurrentRoom.PlayerCount + "/2)";
+
+        if (PhotonNetwork.IsMasterClient &&
+            PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        {
+            PhotonNetwork.LoadLevel("CharacterSelect");
+        }
+        roomRequestPending = false;
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -147,5 +170,6 @@ public class RoomMenuController : MonoBehaviourPunCallbacks
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
         statusText.text = "방 입장 실패: " + message;
+        roomRequestPending = false;
     }
 }

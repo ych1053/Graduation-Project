@@ -40,6 +40,9 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
+  - RequestMove
+  - RequestReady
+  - ShakeRejected
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

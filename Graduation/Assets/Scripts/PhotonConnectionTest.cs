@@ -8,6 +8,8 @@ public class PhotonConnectionTest : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        PhotonNetwork.AutomaticallySyncScene = true;
+
         // 이미 로비에 있으면 다시 접속하지 않음
         if (PhotonNetwork.InLobby)
         {
@@ -33,7 +35,6 @@ public class PhotonConnectionTest : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsConnected)
         {
             Debug.Log("Photon Cloud 접속을 요청합니다.");
-
             bool connectStarted = PhotonNetwork.ConnectUsingSettings();
 
             if (!connectStarted)

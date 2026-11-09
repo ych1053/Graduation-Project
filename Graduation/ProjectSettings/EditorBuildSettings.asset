@@ -8,4 +8,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Bootstrap.unity
     guid: 1eee3fc951e648841b5a2b99da57d2ac
+  - enabled: 1
+    path: Assets/Scenes/CharacterSelect.unity
+    guid: 1b8092feba7d4dd4c9394533c0e20b3c
+  - enabled: 1
+    path: Assets/Scenes/Prologue.unity
+    guid: a9e220cb7f3922f479064385417a65b4
+  - enabled: 1
+    path: Assets/Scenes/Round_1.unity
+    guid: f46500fa18f5b754dbbe4aa41fbfa200
   m_configObjects: {}
