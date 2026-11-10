@@ -127,7 +127,8 @@ public class PrologueDirector : MonoBehaviour
             PhotonNetwork.IsMasterClient)
         {
             loadingStage = true;
-            PhotonNetwork.LoadLevel("Round_1");
+            //PhotonNetwork.LoadLevel("Round_1");
+            PrologueSkipVote.LoadRound1Once();
         }
     }
 

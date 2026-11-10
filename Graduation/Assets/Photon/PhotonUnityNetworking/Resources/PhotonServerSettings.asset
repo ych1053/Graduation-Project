@@ -43,6 +43,16 @@ MonoBehaviour:
   - RequestMove
   - RequestReady
   - ShakeRejected
+  - RequestButtonState
+  - RequestSkip
+  - ShowReadyCount
+  - RequestPickUp
+  - RequestThrow
+  - SetHolder
+  - RequestResetIfHeld
+  - ResetBox
+  - SnapToSpawn
+  - RequestPush
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0
