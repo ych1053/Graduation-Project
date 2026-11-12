@@ -28,6 +28,7 @@ public class WaterPathButton : MonoBehaviourPunCallbacks
     private Vector3 raisedPosition;
     private bool boxOnButton;
     private bool shouldRise;
+    public bool PathIsRaised => shouldRise;
 
     private void Start()
     {
