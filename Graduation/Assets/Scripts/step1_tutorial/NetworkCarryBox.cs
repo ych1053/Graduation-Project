@@ -29,6 +29,17 @@ public class NetworkCarryBox : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (!PhotonNetwork.IsMasterClient) return;
 
+        ConsumableBox consumable = GetComponent<ConsumableBox>();
+
+        if (consumable != null)
+        {
+            // 들고 있던 상자도 소유 상태를 해제한 뒤 소모
+            photonView.RPC(nameof(SetHolder), RpcTarget.All, 0);
+            consumable.ConsumeOnMaster();
+            return;
+        }
+
+        // 첫 번째 기믹의 일반 상자는 기존처럼 복귀
         photonView.RPC(
             nameof(ResetBox),
             RpcTarget.All,
@@ -38,23 +49,45 @@ public class NetworkCarryBox : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     [PunRPC]
-    private void ResetBox(Vector3 position, Quaternion rotation)
+    private void RequestPickUp(PhotonMessageInfo info)
     {
-        holderActorNumber = 0;
+        if (!PhotonNetwork.IsMasterClient || holderActorNumber != 0)
+            return;
+        ConsumableBox consumable = GetComponent<ConsumableBox>();//여기부터
 
-        // 원격 클라이언트의 상자는 계속 물리 계산을 하지 않음
-        body.isKinematic = !PhotonNetwork.IsMasterClient;
+        if (consumable != null && !consumable.CanPickUp)
+            return;//다른상자는 리스폰안됨
+        int actorNumber = info.Sender.ActorNumber;
 
-        body.position = position;
-        body.rotation = rotation;
-        transform.SetPositionAndRotation(position, rotation);
+        // 이미 다른 상자를 들고 있다면 추가로 들 수 없음
+        NetworkCarryBox[] boxes =
+            FindObjectsOfType<NetworkCarryBox>();
+
+        foreach (NetworkCarryBox box in boxes)
+        {
+            if (box.HolderActorNumber == actorNumber)
+                return;
+        }
+
+        Round1Player player = FindPlayer(actorNumber);
+        if (player == null) return;
+
+        if (Vector3.Distance(
+                player.transform.position,
+                transform.position
+            ) > pickupRange + 0.8f)
+            return;
 
         body.velocity = Vector3.zero;
         body.angularVelocity = Vector3.zero;
+        body.isKinematic = true;
 
-        networkPosition = position;
-        networkRotation = rotation;
-    }//여기까지
+        photonView.RPC(
+            nameof(SetHolder),
+            RpcTarget.All,
+            actorNumber
+        );
+    }
     [SerializeField] private Vector3 carryOffset = new Vector3(0f, 1.2f, 1.6f);
     [SerializeField] private float pickupRange = 2.3f;
     [SerializeField] private float pushImpulse = 0.35f;
@@ -164,7 +197,7 @@ public class NetworkCarryBox : MonoBehaviourPunCallbacks, IPunObservable
         );
     }
 
-    [PunRPC]
+   /* [PunRPC]
     private void RequestPickUp(PhotonMessageInfo info)
     {
         if (!PhotonNetwork.IsMasterClient || holderActorNumber != 0)
@@ -186,7 +219,7 @@ public class NetworkCarryBox : MonoBehaviourPunCallbacks, IPunObservable
             RpcTarget.All,
             info.Sender.ActorNumber
         );
-    }
+    }*/
 
     [PunRPC]
     private void RequestThrow(
@@ -201,6 +234,11 @@ public class NetworkCarryBox : MonoBehaviourPunCallbacks, IPunObservable
 
         Round1Player holder = FindPlayer(holderActorNumber);
         if (holder == null) return;
+
+        ConsumableBox consumable = GetComponent<ConsumableBox>();//실제로
+
+        if (consumable != null)//던저기가 승인될때
+            consumable.MarkThrownOnMaster();//사용한상자표시
 
         body.position = holder.transform.TransformPoint(carryOffset);
         body.isKinematic = false;
@@ -354,7 +392,32 @@ public class NetworkCarryBox : MonoBehaviourPunCallbacks, IPunObservable
             int receivedHolder = (int)stream.ReceiveNext();
             ApplyHolder(receivedHolder);
         }
-    }
+    }//여기부터추가함
     private Vector3 spawnPosition;
     private Quaternion spawnRotation;//추가됨
+    [PunRPC]
+    private void ResetBox(Vector3 position, Quaternion rotation)
+    {
+        holderActorNumber = 0;
+
+        if (body == null)
+            body = GetComponent<Rigidbody>();
+
+        // 방장만 상자의 물리를 계산
+        body.isKinematic = !PhotonNetwork.IsMasterClient;
+
+        if (!body.isKinematic)
+        {
+            body.velocity = Vector3.zero;
+            body.angularVelocity = Vector3.zero;
+        }
+
+        body.position = position;
+        body.rotation = rotation;
+
+        transform.SetPositionAndRotation(position, rotation);
+
+        networkPosition = position;
+        networkRotation = rotation;
+    }
 }

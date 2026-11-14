@@ -44,6 +44,7 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
     [SerializeField] private float jumpForce = 6f;
     [SerializeField] private float mouseSensitivity = 3f;
 
+    private PlayerLadderClimb ladderClimb;//사다리
     private Rigidbody body;
     private Vector2 moveInput;
     private bool isRunning;
@@ -69,7 +70,7 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
         {
             body.isKinematic = true;
         }
-
+        ladderClimb = GetComponent<PlayerLadderClimb>();//사다리
         networkPosition = transform.position;
         networkRotation = transform.rotation;
     }
@@ -86,7 +87,12 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
             );
             return;
         }
-
+        if (ladderClimb != null && ladderClimb.IsClimbing)//사다리1
+        {
+            moveInput = Vector2.zero;
+            jumpRequested = false;
+            return;
+        }//사다리2
         moveInput = new Vector2(
             Input.GetAxisRaw("Horizontal"),
             Input.GetAxisRaw("Vertical")
@@ -111,7 +117,8 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
     private void FixedUpdate()
     {
         if (!photonView.IsMine) return;
-
+        if (ladderClimb != null && ladderClimb.IsClimbing)//사다리1
+            return;//사다리2
         Vector3 direction =
             transform.right * moveInput.x +
             transform.forward * moveInput.y;

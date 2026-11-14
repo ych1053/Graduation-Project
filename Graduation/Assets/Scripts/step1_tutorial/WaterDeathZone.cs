@@ -5,21 +5,26 @@ public class WaterDeathZone : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        Round1Player player = other.GetComponentInParent<Round1Player>();
+        Round1Player player =
+            other.GetComponentInParent<Round1Player>();
 
         if (player != null)
         {
-            // 각 컴퓨터는 자기 캐릭터만 복귀시킴
             if (!player.photonView.IsMine) return;
 
-            NetworkCarryBox box = FindObjectOfType<NetworkCarryBox>();
+            int myActorNumber =
+                PhotonNetwork.LocalPlayer.ActorNumber;
 
-            // 상자를 들고 빠졌다면 상자도 원래 위치로
-            if (box != null &&
-                box.HolderActorNumber ==
-                PhotonNetwork.LocalPlayer.ActorNumber)
+            NetworkCarryBox[] boxes =
+                FindObjectsOfType<NetworkCarryBox>();
+
+            foreach (NetworkCarryBox box in boxes)
             {
-                box.AskToResetIfHeld();
+                if (box.HolderActorNumber == myActorNumber)
+                {
+                    box.AskToResetIfHeld();
+                    break;
+                }
             }
 
             player.RespawnAtStart();

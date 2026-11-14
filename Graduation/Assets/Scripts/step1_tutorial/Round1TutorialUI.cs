@@ -48,7 +48,7 @@ public class Round1TutorialUI : MonoBehaviour
     private float runHoldTime;
     private Color originalTextColor;
     private Round1Player localPlayer;
-    private NetworkCarryBox box;
+    [SerializeField] private NetworkCarryBox box;//[?]
 
     private bool pathGuideDone;
     private bool pickupGuideDone;
@@ -250,8 +250,7 @@ public class Round1TutorialUI : MonoBehaviour
             }
         }
 
-        if (box == null)
-            box = FindObjectOfType<NetworkCarryBox>();
+    
 
         if (localPlayer == null || box == null)
             return;
