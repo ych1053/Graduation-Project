@@ -93,6 +93,12 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
             jumpRequested = false;
             return;
         }//사다리2
+        if (Round1PauseMenu.InputBlocked)
+        {
+            moveInput = Vector2.zero;
+            jumpRequested = false;
+            return;
+        }//재시작
         moveInput = new Vector2(
             Input.GetAxisRaw("Horizontal"),
             Input.GetAxisRaw("Vertical")
@@ -117,6 +123,8 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
     private void FixedUpdate()
     {
         if (!photonView.IsMine) return;
+        if (Round1PauseMenu.InputBlocked)//재
+            return;//시작
         if (ladderClimb != null && ladderClimb.IsClimbing)//사다리1
             return;//사다리2
         Vector3 direction =

@@ -55,6 +55,11 @@ MonoBehaviour:
   - RequestPush
   - Consume
   - MarkThrown
+  - RequestActivate
+  - RequestRestart
+  - RequestNextScene
+  - PlayOpen
+  - RequestOpen
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

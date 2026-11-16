@@ -85,6 +85,8 @@ public class Round1TutorialUI : MonoBehaviour
 
     private void Update()
     {
+        if (Round1PauseMenu.InputBlocked)
+            return;//w¿ÁΩ√¿€
         if (changingStep) return;
 
         switch (step)

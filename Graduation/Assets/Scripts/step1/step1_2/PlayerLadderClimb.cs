@@ -40,7 +40,8 @@ public class PlayerLadderClimb : MonoBehaviourPun
     private void Update()
     {
         if (!photonView.IsMine) return;
-
+        if (Round1PauseMenu.InputBlocked)
+            return;//w재시가
         if (IsClimbing && Input.GetKeyDown(KeyCode.Space))
             CancelClimb();
     }
@@ -48,7 +49,8 @@ public class PlayerLadderClimb : MonoBehaviourPun
     private void FixedUpdate()
     {
         if (!photonView.IsMine) return;
-
+        if (Round1PauseMenu.InputBlocked)
+            return;//재시작
         if (!IsClimbing)
         {
             if (Time.time >= reattachTime &&

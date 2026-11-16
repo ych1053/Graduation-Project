@@ -271,7 +271,7 @@ MonoBehaviour:
   playerCamera: {fileID: 5540969890834041021}
   walkSpeed: 4
   runSpeed: 7
-  jumpForce: 6
+  jumpForce: 3
   mouseSensitivity: 3
 --- !u!114 &8709072550478451527
 MonoBehaviour:

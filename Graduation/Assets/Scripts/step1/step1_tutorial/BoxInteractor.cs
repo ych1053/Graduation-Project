@@ -18,7 +18,12 @@ public class BoxInteractor : MonoBehaviourPun
     {
         if (!photonView.IsMine || playerCamera == null)
             return;
-
+        if (Round1PauseMenu.InputBlocked)
+        {
+            isCharging = false;
+            chargingBox = null;
+            return;
+        }//¿ÁΩ√¿€
         int myActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
 
         NetworkCarryBox heldBox = FindMyHeldBox(myActorNumber);
