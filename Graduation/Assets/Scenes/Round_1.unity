@@ -728,7 +728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9581d4614fcb7b43823debc0170f5ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lastStep: {fileID: 902967430}
+  lastStep: {fileID: 0}
   nextSceneName: Round_2
   interactionDistance: 2.5
   chestAnimator: {fileID: 1594994571}
@@ -24612,13 +24612,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4272936960192258408, guid: 73027e1e88be04b479e155695231d298, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1785333404}
   m_SourcePrefab: {fileID: 100100000, guid: 73027e1e88be04b479e155695231d298, type: 3}
 --- !u!4 &1785333402 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7425886524094379571, guid: 73027e1e88be04b479e155695231d298, type: 3}
   m_PrefabInstance: {fileID: 1785333401}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1785333403 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4272936960192258408, guid: 73027e1e88be04b479e155695231d298, type: 3}
+  m_PrefabInstance: {fileID: 1785333401}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1785333404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785333403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a67d4c1dfb87eda4e901f04ed2f98ca1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chestAnim: {fileID: 1594994571}
 --- !u!1001 &1789771673
 PrefabInstance:
   m_ObjectHideFlags: 0

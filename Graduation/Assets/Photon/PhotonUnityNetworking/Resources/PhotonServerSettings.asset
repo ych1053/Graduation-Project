@@ -60,6 +60,7 @@ MonoBehaviour:
   - RequestNextScene
   - PlayOpen
   - RequestOpen
+  - ReceiveSharedMoveInput
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0
