@@ -68,7 +68,7 @@ public class PrologueDirector : MonoBehaviour
             return;
 
         // 1~3: Áß¾Ó Ä³¸¯ÅÍ°¡ Ä¿Áü
-        float zoom = Mathf.Clamp01(t / 3.5f);
+        float zoom = Mathf.Clamp01(t / 3.2f);
         centralCharacter.localScale =
             Vector3.one * Mathf.Lerp(0.1f, 4f, zoom);
 

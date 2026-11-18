@@ -37,7 +37,7 @@ public class BoxInteractor : MonoBehaviourPun
 
         if (heldBox == null)
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.F))
             {
                 NetworkCarryBox nearestBox = FindNearestAvailableBox();
 

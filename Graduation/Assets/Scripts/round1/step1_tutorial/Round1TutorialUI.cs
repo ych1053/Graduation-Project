@@ -325,7 +325,7 @@ public class Round1TutorialUI : MonoBehaviour
         {
             if (boxAvailable && nearBox)
             {
-                guideText.text = "E 키를 눌러 상자를 드세요";
+                guideText.text = "F 키를 눌러 상자를 드세요";
             }
             else
             {

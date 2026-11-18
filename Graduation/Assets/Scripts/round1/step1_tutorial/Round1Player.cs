@@ -250,7 +250,13 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
         if (!photonView.IsMine)
             return;
 
-        // 복귀 순간의 담당 입력을 일단 정지시킨다.
+        // 사다리 상태를 먼저 해제하고 기존 Rigidbody 설정을 복원한다.
+        if (ladderClimb != null)
+        {
+            ladderClimb.CancelClimb();
+        }
+
+        // 공유 조작 중이었다면 내 담당 입력을 일단 0으로 전달한다.
         if (UsesSharedMovement)
         {
             Round2SharedMovement.Instance.UpdateLocalInput(
@@ -278,6 +284,8 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
         isRunning = false;
         isGrounded = false;
 
+        nextBoxPushTime = Time.time + 0.2f;
+
         photonView.RPC(
             nameof(SnapToSpawn),
             RpcTarget.Others,
@@ -285,6 +293,8 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
             spawnRotation
         );
     }
+
+
 
     [PunRPC]
     private void SnapToSpawn(

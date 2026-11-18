@@ -270,7 +270,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 5540969890834041021}
   walkSpeed: 4
-  runSpeed: 7
+  runSpeed: 6.5
   jumpForce: 5
   mouseSensitivity: 3
 --- !u!114 &5057896413005996021
@@ -288,8 +288,8 @@ MonoBehaviour:
   playerCamera: {fileID: 5540969890834041021}
   pickupRange: 2.3
   maxChargeTime: 3
-  minThrowForce: 5
-  maxThrowForce: 30
+  minThrowForce: 3
+  maxThrowForce: 25
 --- !u!114 &7754390190397413800
 MonoBehaviour:
   m_ObjectHideFlags: 0
