@@ -187,9 +187,9 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
     [PunRPC]
     public void ReceiveSharedMoveInput(
         float axis,
+        int attemptNumber,
         PhotonMessageInfo info)
     {
-        // 이 캐릭터의 소유자가 보낸 입력만 받는다.
         if (info.Sender == null ||
             info.Sender.ActorNumber != photonView.OwnerActorNr)
         {
@@ -201,7 +201,8 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
 
         Round2SharedMovement.Instance.ReceiveInput(
             info.Sender.ActorNumber,
-            axis
+            axis,
+            attemptNumber
         );
     }
 

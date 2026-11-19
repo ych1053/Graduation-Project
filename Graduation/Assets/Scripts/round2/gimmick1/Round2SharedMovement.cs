@@ -28,6 +28,12 @@ public class Round2SharedMovement : MonoBehaviourPunCallbacks
 
     private string runToken;
 
+    // 공동 복귀할 때마다 바뀌는 첫 기믹 시도 번호.
+    private int currentAttempt;
+    public int CurrentAttempt => currentAttempt;//기믹3떄문에 추가
+    private string CompletionToken =>
+        runToken + "|" + currentAttempt;
+
     private float player1Axis;
     private float player2Axis;
 
@@ -39,6 +45,10 @@ public class Round2SharedMovement : MonoBehaviourPunCallbacks
 
     private float nextArrivalCheckTime;
     private bool completionRequested;
+
+    // 복귀 전 위치가 아직 남아 있는 동안
+    // 도착 완료로 다시 판정되는 것을 막는다.
+    private bool waitingForArrivalZonesToClear;
 
     private void Awake()
     {
@@ -75,7 +85,6 @@ public class Round2SharedMovement : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.InRoom)
             return;
 
-        // 현재 게임 실행을 구분하는 기존 값을 사용한다.
         runToken =
             PhotonNetwork.CurrentRoom.CustomProperties[
                 Round1Reload.RunKey
@@ -114,7 +123,6 @@ public class Round2SharedMovement : MonoBehaviourPunCallbacks
 
         nextArrivalCheckTime = Time.unscaledTime + 0.1f;
 
-        // 방장 화면에서 각자 지정된 도착 영역을 검사한다.
         bool player1Arrived =
             player1ArrivalZone.ContainsPlayer(
                 spawner.Player1ActorNumber
@@ -125,17 +133,55 @@ public class Round2SharedMovement : MonoBehaviourPunCallbacks
                 spawner.Player2ActorNumber
             );
 
+        if (waitingForArrivalZonesToClear)
+        {
+            // 두 사람 모두 기존 도착 영역에서 벗어난 것을
+            // 확인한 뒤 새 도착 판정을 시작한다.
+            if (!player1Arrived && !player2Arrived)
+            {
+                waitingForArrivalZonesToClear = false;
+            }
+
+            return;
+        }
+
         if (!player1Arrived || !player2Arrived)
             return;
 
-        // 완료 상태를 방에 저장하여 양쪽에 전달한다.
         completionRequested =
             PhotonNetwork.CurrentRoom.SetCustomProperties(
                 new Hashtable
                 {
-                    { CompletedRunKey, runToken }
+                    { CompletedRunKey, CompletionToken }
                 }
             );
+    }
+
+    public void ResetForTeamRespawn(int respawnNumber)
+    {
+        // 같은 복귀 명령을 중복 적용하지 않는다.
+        if (respawnNumber <= currentAttempt)
+            return;
+
+        currentAttempt = respawnNumber;
+
+        IsSharedMode = true;
+        completionRequested = false;
+        waitingForArrivalZonesToClear = true;
+
+        player1Axis = 0f;
+        player2Axis = 0f;
+
+        player1ReceivedAt = -100f;
+        player2ReceivedAt = -100f;
+
+        lastSentAxis = float.NaN;
+        nextSendTime = 0f;
+        nextArrivalCheckTime = 0f;
+
+        Debug.Log(
+            "[Round2] 공동 복귀: 첫 기믹의 공유 조작을 다시 시작합니다."
+        );
     }
 
     public void UpdateLocalInput(
@@ -174,7 +220,11 @@ public class Round2SharedMovement : MonoBehaviourPunCallbacks
             }
         }
 
-        ReceiveInput(playerView.OwnerActorNr, axis);
+        ReceiveInput(
+            playerView.OwnerActorNr,
+            axis,
+            currentAttempt
+        );
 
         if (axis != lastSentAxis ||
             Time.unscaledTime >= nextSendTime)
@@ -182,7 +232,8 @@ public class Round2SharedMovement : MonoBehaviourPunCallbacks
             playerView.RPC(
                 nameof(Round1Player.ReceiveSharedMoveInput),
                 RpcTarget.Others,
-                axis
+                axis,
+                currentAttempt
             );
 
             lastSentAxis = axis;
@@ -193,9 +244,16 @@ public class Round2SharedMovement : MonoBehaviourPunCallbacks
         }
     }
 
-    public void ReceiveInput(int actorNumber, float axis)
+    public void ReceiveInput(
+        int actorNumber,
+        float axis,
+        int inputAttempt)
     {
         if (!IsSharedMode || spawner == null)
+            return;
+
+        // 복귀 전에 전송된 이전 시도의 입력은 무시한다.
+        if (inputAttempt != currentAttempt)
             return;
 
         if (float.IsNaN(axis) || float.IsInfinity(axis))
@@ -267,8 +325,9 @@ public class Round2SharedMovement : MonoBehaviourPunCallbacks
             return;
         }
 
+        // 현재 시도의 완료 기록만 적용한다.
         if (!(value is string completedToken) ||
-            completedToken != runToken)
+            completedToken != CompletionToken)
         {
             return;
         }
@@ -277,12 +336,13 @@ public class Round2SharedMovement : MonoBehaviourPunCallbacks
 
         player1Axis = 0f;
         player2Axis = 0f;
+
         player1ReceivedAt = -100f;
         player2ReceivedAt = -100f;
 
         Debug.Log(
             "[Round2] 두 플레이어 도착 완료! " +
-            "공유 조작을 해제하고 각자 WASD 조작으로 전환합니다."
+            "각자 WASD 조작으로 전환합니다."
         );
     }
 

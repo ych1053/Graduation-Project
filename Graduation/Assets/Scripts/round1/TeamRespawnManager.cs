@@ -131,7 +131,6 @@ public class TeamRespawnManager : MonoBehaviourPun
 
         lastAppliedRespawnNumber = respawnNumber;
 
-        // 이후 방장이 바뀌어도 번호를 이어서 사용할 수 있게 한다.
         masterRespawnNumber = Mathf.Max(
             masterRespawnNumber,
             respawnNumber
@@ -140,12 +139,20 @@ public class TeamRespawnManager : MonoBehaviourPun
         nextRequestTime =
             Time.unscaledTime + Mathf.Max(0.1f, respawnCooldown);
 
+        // Round_2에서는 첫 기믹의 공유 조작도 다시 시작한다.
+        // 캐릭터를 복귀시키기 전에 새 시도를 준비한다.
+        if (Round2SharedMovement.Instance != null)
+        {
+            Round2SharedMovement.Instance.ResetForTeamRespawn(
+                respawnNumber
+            );
+        }
+
         Round1Player[] players =
             FindObjectsOfType<Round1Player>();
 
         foreach (Round1Player player in players)
         {
-            // 각 클라이언트가 자기 캐릭터를 복귀시킨다.
             if (player.photonView.IsMine)
             {
                 player.RespawnAtStart();
