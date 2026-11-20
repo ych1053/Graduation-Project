@@ -3582,6 +3582,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 253465686}
+  - component: {fileID: 253465687}
   m_Layer: 0
   m_Name: LeverPoint
   m_TagString: Untagged
@@ -3605,6 +3606,27 @@ Transform:
   - {fileID: 223236411}
   m_Father: {fileID: 639054576}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &253465687
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 253465685}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.2, y: 5, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &271192265
 GameObject:
   m_ObjectHideFlags: 0
@@ -18401,7 +18423,7 @@ Transform:
   m_GameObject: {fileID: 1305431138}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 4.32, y: 3.21, z: 27.48}
+  m_LocalPosition: {x: 8.2, y: 8.2, z: 63}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
