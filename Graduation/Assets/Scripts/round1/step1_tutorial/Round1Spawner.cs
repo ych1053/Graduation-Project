@@ -16,7 +16,7 @@ public class Round1Spawner : MonoBehaviour
         if (!PhotonNetwork.InRoom)
         {
             Debug.LogWarning(
-                "Photon ¹æ¿¡ µé¾î¿ÀÁö ¾Ê¾Ò½À´Ï´Ù. Main Camera¸¦ À¯ÁöÇÕ´Ï´Ù."
+                "Photon ï¿½æ¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½. Main Cameraï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½."
             );
             yield break;
         }
@@ -33,7 +33,7 @@ public class Round1Spawner : MonoBehaviour
             }
         );
 
-        // ¸ðµç ÇÃ·¹ÀÌ¾î°¡ Round_1 ·ÎµùÀ» ¸¶Ä¥ ¶§±îÁö ´ë±â
+        // ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î°¡ Round_1 ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½Ä¥ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         while (PhotonNetwork.InRoom &&
                !Round1Reload.AllPlayersReady("r1_spawnReady", token))
         {
@@ -41,7 +41,10 @@ public class Round1Spawner : MonoBehaviour
         }
 
         if (PhotonNetwork.InRoom)
-            SpawnPlayer();
+            {
+                RunRecordClock.BeginRun();
+                SpawnPlayer();
+            }
     }
 
     private void SpawnPlayer()
@@ -54,7 +57,7 @@ public class Round1Spawner : MonoBehaviour
         if (!PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(
                 key, out object value))
         {
-            Debug.LogError("Ä³¸¯ÅÍ ¼±ÅÃ°ªÀÌ ¾ø½À´Ï´Ù: " + key);
+            Debug.LogError("Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½: " + key);
             return;
         }
 
@@ -75,14 +78,14 @@ public class Round1Spawner : MonoBehaviour
         }
         else
         {
-            Debug.LogError("¾Ë ¼ö ¾ø´Â Ä³¸¯ÅÍ ¼±ÅÃ°ª: " + choice);
+            Debug.LogError("ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã°ï¿½: " + choice);
             return;
         }
 
         if (spawnPoint == null)
         {
             Debug.LogError(
-                prefabName + "ÀÇ Spawn Point¸¦ ¿¬°áÇÏ¼¼¿ä."
+                prefabName + "ï¿½ï¿½ Spawn Pointï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½."
             );
             return;
         }
@@ -106,8 +109,8 @@ public class Round1Spawner : MonoBehaviour
             !playerCamera.gameObject.activeInHierarchy)
         {
             Debug.LogError(
-                "ÇÃ·¹ÀÌ¾î Ä«¸Þ¶ó°¡ ¾ø°Å³ª ²¨Á® ÀÖ½À´Ï´Ù. " +
-                "Main Camera¸¦ À¯ÁöÇÕ´Ï´Ù."
+                "ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½. " +
+                "Main Cameraï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½."
             );
             return;
         }

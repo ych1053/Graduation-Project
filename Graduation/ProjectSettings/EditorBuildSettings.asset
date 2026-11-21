@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Round_2.unity
     guid: f5b43ca7c361f1741bede25287669934
+  - enabled: 1
+    path: Assets/Scenes/EndingReplay.unity
+    guid: 6bf69d4c0c828db4599591a614471bb9
   m_configObjects: {}
