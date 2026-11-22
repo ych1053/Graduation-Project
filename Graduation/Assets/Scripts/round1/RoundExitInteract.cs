@@ -12,11 +12,14 @@ public class RoundExitInteract : MonoBehaviourPun
     [SerializeField] private Animator chestAnimator;
     [SerializeField] private string openStateName = "Open";
     [SerializeField] private float sceneMoveDelay = 1.5f;
+    [SerializeField, Min(0f)] private float openBeforeSmokeSeconds = 1.5f;
+    [SerializeField] private ParticleSystem chestSmoke;
+    [SerializeField, Min(1f)] private float smokeSeconds = 3f;
 
     private Round1Player localPlayer;
     private bool isOpening;
 
-    // NoneÀÌ¸é ¹Ù·Î »ç¿ë °¡´É
+    // Noneì´ë©´ ë°”ë¡œ ì‚¬ìš© ê°€ëŠ¥
     private bool CanUse =>
         lastStep == null || lastStep.IsComplete;
 
@@ -51,7 +54,7 @@ public class RoundExitInteract : MonoBehaviourPun
         );
 
         if (distance <= interactionDistance &&
-            Input.GetKeyDown(KeyCode.E))
+            Input.GetKeyDown(KeyCode.F))
         {
             photonView.RPC(
                 nameof(RequestOpen),
@@ -94,16 +97,16 @@ public class RoundExitInteract : MonoBehaviourPun
         {
             Debug.LogError(
                 nextSceneName +
-                " ¾ÀÀ» Build Settings¿¡ Ãß°¡ÇÏ¼¼¿ä.",
+                " ì”¬ì„ Build Settingsì— ì¶”ê°€í•˜ì„¸ìš”.",
                 this
             );
             return;
         }
 
-        // ¿¬¼Ó ¿äÃ» ¹æÁö
+        // ì—°ì† ìš”ì²­ ë°©ì§€
         isOpening = true;
 
-        // ¾çÂÊ È­¸é¿¡¼­ °°Àº ¿­¸² µ¿ÀÛ ½ÇÇà
+        // ì–‘ìª½ í™”ë©´ì—ì„œ ê°™ì€ ì—´ë¦¼ ë™ìž‘ ì‹¤í–‰
         photonView.RPC(nameof(PlayOpen), RpcTarget.All);
     }
 
@@ -126,22 +129,33 @@ public class RoundExitInteract : MonoBehaviourPun
             else
             {
                 Debug.LogWarning(
-                    "»óÀÚÀÇ Open State NameÀ» È®ÀÎÇÏ¼¼¿ä: " +
+                    "ìƒìžì˜ Open State Nameì„ í™•ì¸í•˜ì„¸ìš”: " +
                     openStateName,
                     this
                 );
             }
         }
 
-        // ¾Ö´Ï¸ÞÀÌ¼Ç ¼³Á¤ ¿©ºÎ¿Í °ü°è¾øÀÌ ¾À ÀÌµ¿Àº ÁøÇà
+        StartCoroutine(StartSmokeAfterOpen());
+
+        // ì• ë‹ˆë©”ì´ì…˜ ì„¤ì • ì—¬ë¶€ì™€ ê´€ê³„ì—†ì´ ì”¬ ì´ë™ì€ ì§„í–‰
         if (PhotonNetwork.IsMasterClient)
             StartCoroutine(MoveToNextScene());
+    }
+
+    private IEnumerator StartSmokeAfterOpen()
+    {
+        yield return new WaitForSecondsRealtime(openBeforeSmokeSeconds);
+        if (!this || !PhotonNetwork.InRoom || Round1PauseMenu.IsRestarting) yield break;
+        if (chestSmoke) chestSmoke.Play(true);
+        ExitSmokeScreen.Begin(chestSmoke ? chestSmoke.transform.position : transform.position + Vector3.up,
+            smokeSeconds, nextSceneName);
     }
 
     private IEnumerator MoveToNextScene()
     {
         yield return new WaitForSecondsRealtime(
-            Mathf.Max(0f, sceneMoveDelay)
+            Mathf.Max(sceneMoveDelay, openBeforeSmokeSeconds + smokeSeconds + 0.5f)
         );
 
         if (!PhotonNetwork.InRoom ||

@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: -5794569556960404349}
   - component: {fileID: 5057896413005996021}
   - component: {fileID: 7754390190397413800}
+  - component: {fileID: 3481519554620944538}
   m_Layer: 0
   m_Name: RangerPlayer
   m_TagString: Player
@@ -289,7 +290,7 @@ MonoBehaviour:
   pickupRange: 2.3
   maxChargeTime: 3
   minThrowForce: 3
-  maxThrowForce: 25
+  maxThrowForce: 30
 --- !u!114 &7754390190397413800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,6 +305,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   climbSpeed: 2.5
   attachDistance: 1
+--- !u!114 &3481519554620944538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046678081826403756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07a61edb2f04d154fbf4e312749ca902, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modelAnimator: {fileID: 752633606036975406}
+  smoothing: 0.12
+  idleThreshold: 0.15
+  teleportSpeed: 20
 --- !u!1001 &2258659451929928398
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -359,8 +376,37 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6ace5e4f10362564b9c9209dfad5a9c1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 752633606036975406}
   m_SourcePrefab: {fileID: 100100000, guid: 6ace5e4f10362564b9c9209dfad5a9c1, type: 3}
+--- !u!1 &1412220551972364191 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6ace5e4f10362564b9c9209dfad5a9c1, type: 3}
+  m_PrefabInstance: {fileID: 2258659451929928398}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &752633606036975406
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412220551972364191}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 52e7132a167c4b445a1a7740d2ee6303, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &1788746747307214117 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6ace5e4f10362564b9c9209dfad5a9c1, type: 3}

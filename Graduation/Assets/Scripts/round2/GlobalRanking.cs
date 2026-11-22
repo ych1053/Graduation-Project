@@ -128,7 +128,7 @@ public class GlobalRanking : MonoBehaviour
                 currentRecordId = PhotonNetwork.CurrentRoom.CustomProperties["rank_current_id"] as string ?? "";
             Canvas.ForceUpdateCanvases();
             RectTransform area = rankingText.rectTransform;
-            float rowHeight = Mathf.Max(48f, rankingText.fontSize * 1.6f);
+            float rowHeight = Mathf.Max(48f, rankingText.fontSize * 1.8f);
             rankingText.text = "Ranking\n" + message;
             for (int i = Math.Min(5, response.records.Length) - 1; i >= 0; i--)
             {
@@ -150,11 +150,11 @@ public class GlobalRanking : MonoBehaviour
                 label.text = newLine;
                 label.color = !string.IsNullOrEmpty(currentRecordId) && row.record_id == currentRecordId
                     ? Color.yellow : Color.white;
-                RectTransform rect = label.rectTransform;
+                RectTransform rect = label.rectTransform;   
                 rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 1f);
                 rect.pivot = new Vector2(0.5f, 0.5f);
                 rect.sizeDelta = new Vector2(area.rect.width, rowHeight);
-                Vector2 destination = new Vector2(0, -rowHeight * (i + 1.5f));
+                Vector2 destination = new Vector2(0, -rowHeight * (i + 0.8f));
                 Canvas canvas = rankingText.GetComponentInParent<Canvas>();
                 float height = canvas ? ((RectTransform)canvas.rootCanvas.transform).rect.height : 1080f;
                 Vector2 origin = destination + Vector2.up * (height + area.rect.height);

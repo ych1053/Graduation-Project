@@ -9,6 +9,7 @@ public static class RunRecordClock
         if (!PhotonNetwork.InRoom || !PhotonNetwork.IsMasterClient) return;
         PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable {
             { "run_start", PhotonNetwork.Time },
+            { "run_clock_token", PhotonNetwork.CurrentRoom.CustomProperties[Round1Reload.RunKey] as string ?? "initial" },
             { "rank_json", null }, { "rank_message", null }, { "rank_current_id", null }
         });
     }

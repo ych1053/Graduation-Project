@@ -1,59 +1,57 @@
+using System;
 using System.Collections;
-//using ExitGames.Client.Photon;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 [DefaultExecutionOrder(-100)]
 [RequireComponent(typeof(PhotonView))]
 public class Round1PauseMenu : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject pausePanel;
+    [Header("Round_2ì—ì„œë§Œ ì¼œì„¸ìš”")]
+    [SerializeField] private bool useEndingReplay;
+    [SerializeField] private Round2EndingChest ending;
 
     public static bool IsOpen { get; private set; }
     public static bool IsRestarting { get; private set; }
-
     private static float resumeInputAt;
-
-    public static bool InputBlocked =>
-        IsOpen ||
-        IsRestarting ||
-        Time.unscaledTime < resumeInputAt;
+    public static bool InputBlocked => IsOpen || IsRestarting || Time.unscaledTime < resumeInputAt || SessionChat.InputBlocked || ExitSmokeScreen.IsPlaying;
 
     private bool restartStarted;
+    private bool requestPending;
+    private float requestDeadline;
     private CursorLockMode savedCursorLock;
     private bool savedCursorVisible;
+    private string ReloadScene => useEndingReplay ? "EndingReplay" : "Round1Reload";
 
     private void Awake()
     {
         IsOpen = false;
         IsRestarting = false;
         resumeInputAt = 0f;
-
         Time.timeScale = 1f;
         PhotonNetwork.AutomaticallySyncScene = true;
-
-        if (pausePanel == null)
-        {
-            Debug.LogError("Pause PanelÀ» ¿¬°áÇÏ¼¼¿ä.", this);
-            enabled = false;
-            return;
-        }
-
+        if (!pausePanel)
+        { Debug.LogError("Pause Panelì„ ì—°ê²°í•˜ì„¸ìš”.", this); enabled = false; return; }
         pausePanel.SetActive(false);
     }
 
     private void Update()
     {
-        if (IsRestarting) return;
-
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (requestPending && !IsRestarting && Time.realtimeSinceStartup >= requestDeadline)
+        { requestPending = false; Debug.LogWarning("ì¬ì‹œì‘ ì‘ë‹µì´ ì—†ìŠµë‹ˆë‹¤. ë‹¤ì‹œ ì‹œë„í•˜ì„¸ìš”."); }
+        if (IsRestarting || ExitSmokeScreen.IsPlaying) return;
+        if (ending && ending.HasStarted)
         {
-            if (IsOpen)
-                ResumeGame();
-            else
-                OpenMenu();
+            if (IsOpen) ResumeGame();
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Escape) && SessionChat.EscapeConsumedFrame != Time.frameCount)
+        {
+            if (IsOpen) ResumeGame();
+            else OpenMenu();
         }
     }
 
@@ -61,10 +59,8 @@ public class Round1PauseMenu : MonoBehaviourPunCallbacks
     {
         savedCursorLock = Cursor.lockState;
         savedCursorVisible = Cursor.visible;
-
         IsOpen = true;
         pausePanel.SetActive(true);
-
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -72,99 +68,74 @@ public class Round1PauseMenu : MonoBehaviourPunCallbacks
     public void ResumeGame()
     {
         if (IsRestarting) return;
-
         pausePanel.SetActive(false);
         IsOpen = false;
-
         Cursor.lockState = savedCursorLock;
         Cursor.visible = savedCursorVisible;
-
-        // ÀÌ¾îÇÏ±â ¹öÆ°À» ³õÀº ÀÔ·ÂÀÌ »óÀÚ ´øÁö±â·Î ÀÌ¾îÁöÁö ¾Ê°Ô ÇÔ
         resumeInputAt = Time.unscaledTime + 0.15f;
     }
 
     public void RestartGame()
     {
-        if (IsRestarting) return;
-
+        if (IsRestarting || requestPending || (ending && ending.HasStarted)) return;
         if (!PhotonNetwork.InRoom)
-        {
-            SceneManager.LoadScene("Round_1");
-            return;
-        }
-
-        if (!Application.CanStreamedLevelBeLoaded("Round1Reload"))
-        {
-            Debug.LogError(
-                "Round1Reload ¾ÀÀ» Build Settings¿¡ Ãß°¡ÇÏ¼¼¿ä."
-            );
-            return;
-        }
-
-        IsRestarting = true;
-
-        photonView.RPC(
-            nameof(RequestRestart),
-            RpcTarget.MasterClient
-        );
+        { SceneManager.LoadScene("Round_1"); return; }
+        if (!Application.CanStreamedLevelBeLoaded(ReloadScene))
+        { Debug.LogError(ReloadScene + " ì”¬ì„ Build Settingsì— ì¶”ê°€í•˜ì„¸ìš”."); return; }
+        if (useEndingReplay && PhotonNetwork.CurrentRoom.PlayerCount != 2)
+        { Debug.LogWarning("ì¬ì‹œì‘ì—ëŠ” ë‘ í”Œë ˆì´ì–´ê°€ í•„ìš”í•©ë‹ˆë‹¤."); return; }
+        requestPending = true;
+        requestDeadline = Time.realtimeSinceStartup + 12f;
+        photonView.RPC(nameof(RequestRestart), RpcTarget.MasterClient);
     }
 
     [PunRPC]
-    private void RequestRestart()
+    private void RequestRestart(PhotonMessageInfo info)
     {
-        if (!PhotonNetwork.IsMasterClient || restartStarted)
-            return;
-
+        if (!PhotonNetwork.IsMasterClient || restartStarted || info.Sender == null ||
+            (ending && ending.HasStarted)) return;
+        if (!Application.CanStreamedLevelBeLoaded(ReloadScene)) return;
+        if (useEndingReplay && PhotonNetwork.CurrentRoom.PlayerCount != 2) return;
         restartStarted = true;
         StartCoroutine(BeginRestart());
     }
 
     private IEnumerator BeginRestart()
     {
-        string token = System.Guid.NewGuid().ToString();
-
-        PhotonNetwork.CurrentRoom.SetCustomProperties(
-            new Hashtable
-            {
-                { Round1Reload.RunKey, token },
-                { Round1Reload.RestartingKey, true }
-            }
-        );
-
-        // »õ Àç½ÃÀÛ ¹øÈ£°¡ ¼­¹ö¿¡ ¹İ¿µµÈ °ÍÀ» È®ÀÎ
-        while (PhotonNetwork.InRoom &&
-               !Equals(
-                   PhotonNetwork.CurrentRoom.CustomProperties[
-                       Round1Reload.RunKey
-                   ],
-                   token
-               ))
-        {
+        string token = Guid.NewGuid().ToString("N");
+        string tokenKey = useEndingReplay ? "ending_replay" : Round1Reload.RunKey;
+        var properties = new Hashtable {
+            { tokenKey, token },
+            { Round1Reload.RestartingKey, true }
+        };
+        PhotonNetwork.CurrentRoom.SetCustomProperties(properties);
+        float deadline = Time.realtimeSinceStartup + 10f;
+        while (PhotonNetwork.InRoom && Time.realtimeSinceStartup < deadline &&
+            !Equals(PhotonNetwork.CurrentRoom.CustomProperties[tokenKey], token))
             yield return null;
+        if (!PhotonNetwork.InRoom) yield break;
+        if (!Equals(PhotonNetwork.CurrentRoom.CustomProperties[tokenKey], token))
+        {
+            restartStarted = false;
+            requestPending = false;
+            IsRestarting = false;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { Round1Reload.RestartingKey, false } });
+            Debug.LogError("ì¬ì‹œì‘ ìƒíƒœë¥¼ ì„œë²„ì— ê¸°ë¡í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
+            yield break;
         }
-
-        if (PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient)
-            PhotonNetwork.LoadLevel("Round1Reload");
+        if (PhotonNetwork.IsMasterClient) PhotonNetwork.LoadLevel(ReloadScene);
     }
 
-    public override void OnRoomPropertiesUpdate(
-        Hashtable changedProperties
-    )
+    public override void OnRoomPropertiesUpdate(Hashtable changedProperties)
     {
-        if (changedProperties.TryGetValue(
-                Round1Reload.RestartingKey,
-                out object value
-            ) && value is bool restarting && restarting)
-        {
-            IsRestarting = true;
-        }
+        if (changedProperties.TryGetValue(Round1Reload.RestartingKey, out object value))
+            IsRestarting = value is bool restarting && restarting;
     }
 
     public void QuitGame()
     {
-        if (PhotonNetwork.IsConnected)
-            PhotonNetwork.Disconnect();
-
+        if (PhotonNetwork.IsConnected) PhotonNetwork.Disconnect();
+        Time.timeScale = 1f;
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -179,7 +150,8 @@ public class Round1PauseMenu : MonoBehaviourPunCallbacks
             Cursor.lockState = savedCursorLock;
             Cursor.visible = savedCursorVisible;
         }
-
         IsOpen = false;
+        IsRestarting = false;
+        resumeInputAt = 0f;
     }
 }

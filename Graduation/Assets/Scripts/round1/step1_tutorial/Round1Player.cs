@@ -25,7 +25,22 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
     private Quaternion spawnRotation;
 
     private float nextBoxPushTime;
+    public float AnimationSpeed
+    {
+        get
+        {
+            if (Round1PauseMenu.InputBlocked || IsClimbing ||
+                 moveInput.sqrMagnitude < 0.01f)
+                return 0f;
 
+            if (UsesSharedMovement)
+                return Round2SharedMovement.Instance.SharedWalkSpeed;
+
+            return isRunning ? runSpeed : walkSpeed;
+        }
+    }
+    
+    
     private bool IsClimbing =>
         ladderClimb != null && ladderClimb.IsClimbing;
 
@@ -62,7 +77,7 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
 
     private void Update()
     {
-        // »ó´ë Ä³¸¯ÅÍ´Â ¹ÞÀº À§Ä¡¿Í È¸ÀüÀ¸·Î Ç¥½ÃÇÑ´Ù.
+        // ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Í´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ï¿½Ñ´ï¿½.
         if (!photonView.IsMine)
         {
             transform.position = Vector3.Lerp(
@@ -83,8 +98,8 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
         bool inputBlocked =
             Round1PauseMenu.InputBlocked || IsClimbing;
 
-        // ¸Þ´º³ª »ç´Ù¸® ¶§¹®¿¡ Á¶ÀÛÇÒ ¼ö ¾øÀ» ¶§µµ
-        // »ó´ë¿¡°Ô ÀÔ·Â 0À» Àü´ÞÇÑ´Ù.
+        // ï¿½Þ´ï¿½ï¿½ï¿½ ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        // ï¿½ï¿½ë¿¡ï¿½ï¿½ ï¿½Ô·ï¿½ 0ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         if (UsesSharedMovement)
         {
             Round2SharedMovement.Instance.UpdateLocalInput(
@@ -103,16 +118,16 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
 
         if (UsesSharedMovement)
         {
-            // µÎ ÇÃ·¹ÀÌ¾îÀÇ ´ã´ç ÀÔ·ÂÀ» ÇÕÃÄ »ç¿ëÇÑ´Ù.
+            // ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
             moveInput =
                 Round2SharedMovement.Instance.GetSharedInput();
 
-            // °øÀ¯ ±¸°£¿¡¼­´Â µÎ Ä³¸¯ÅÍÀÇ ¼Óµµ¸¦ ¸ÂÃá´Ù.
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½.
             isRunning = false;
         }
         else
         {
-            // Round_1°ú ÀÏ¹Ý Á¶ÀÛ ±¸°£ÀÇ ±âÁ¸ ÀÔ·Â.
+            // Round_1ï¿½ï¿½ ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½.
             moveInput = new Vector2(
                 Input.GetAxisRaw("Horizontal"),
                 Input.GetAxisRaw("Vertical")
@@ -123,13 +138,18 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
                 Input.GetKey(KeyCode.RightShift);
         }
 
-        // Á¡ÇÁ´Â ±âÁ¸Ã³·³ °¢ÀÚ Á¶ÀÛÇÑ´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             jumpRequested = true;
+            PlayerLocomotionAnimation animation =
+                GetComponent<PlayerLocomotionAnimation>();
+
+            if (animation != null)
+                animation.PlayJump();
         }
 
-        // ¿ìÅ¬¸¯ ½ÃÁ¡ Á¶ÀÛµµ °¢ÀÚ À¯ÁöÇÑ´Ù.
+        // ï¿½ï¿½Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ûµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         if (Input.GetMouseButton(1))
         {
             float turn =
@@ -172,7 +192,11 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
                 Vector3.up * jumpForce,
                 ForceMode.Impulse
             );
+            PlayerLocomotionAnimation animation =
+                GetComponent<PlayerLocomotionAnimation>();
 
+           // if (animation != null)
+                //animation.PlayJump();
             isGrounded = false;
             jumpRequested = false;
         }
@@ -211,7 +235,7 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
         if (!photonView.IsMine)
             return;
 
-        // ¹æÀåÀÌ ¾Æ´Ñ ÇÃ·¹ÀÌ¾îÀÇ »óÀÚ ¹Ð±â.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ð±ï¿½.
         if (!Round1PauseMenu.InputBlocked &&
             !IsClimbing &&
             !PhotonNetwork.IsMasterClient &&
@@ -251,13 +275,13 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
         if (!photonView.IsMine)
             return;
 
-        // »ç´Ù¸® »óÅÂ¸¦ ¸ÕÀú ÇØÁ¦ÇÏ°í ±âÁ¸ Rigidbody ¼³Á¤À» º¹¿øÇÑ´Ù.
+        // ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ Rigidbody ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         if (ladderClimb != null)
         {
             ladderClimb.CancelClimb();
         }
 
-        // °øÀ¯ Á¶ÀÛ ÁßÀÌ¾ú´Ù¸é ³» ´ã´ç ÀÔ·ÂÀ» ÀÏ´Ü 0À¸·Î Àü´ÞÇÑ´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
         if (UsesSharedMovement)
         {
             Round2SharedMovement.Instance.UpdateLocalInput(

@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: -3569330417720134224}
   - component: {fileID: 8709072550478451527}
   - component: {fileID: 8061975565517554781}
+  - component: {fileID: 3540789214659297985}
   m_Layer: 0
   m_Name: KnightPlayer
   m_TagString: Player
@@ -269,8 +270,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 5540969890834041021}
-  walkSpeed: 3
-  runSpeed: 5.5
+  walkSpeed: 3.5
+  runSpeed: 6
   jumpForce: 4.3
   mouseSensitivity: 3
 --- !u!114 &8709072550478451527
@@ -289,7 +290,7 @@ MonoBehaviour:
   pickupRange: 2.3
   maxChargeTime: 3
   minThrowForce: 3
-  maxThrowForce: 33
+  maxThrowForce: 40
 --- !u!114 &8061975565517554781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,6 +305,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   climbSpeed: 2.5
   attachDistance: 1
+--- !u!114 &3540789214659297985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046678081826403756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07a61edb2f04d154fbf4e312749ca902, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modelAnimator: {fileID: 8698957490273014062}
+  smoothing: 0.12
+  idleThreshold: 0.15
+  teleportSpeed: 20
 --- !u!1001 &2695683823537342916
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -359,10 +376,39 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6a5ec64aa9986854eb785432f9649fbb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8698957490273014062}
   m_SourcePrefab: {fileID: 100100000, guid: 6a5ec64aa9986854eb785432f9649fbb, type: 3}
 --- !u!4 &2513649997221244463 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6a5ec64aa9986854eb785432f9649fbb, type: 3}
   m_PrefabInstance: {fileID: 2695683823537342916}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3002097710992520341 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6a5ec64aa9986854eb785432f9649fbb, type: 3}
+  m_PrefabInstance: {fileID: 2695683823537342916}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &8698957490273014062
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3002097710992520341}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 30cf1e0691336ec48a33d92881846ecc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
