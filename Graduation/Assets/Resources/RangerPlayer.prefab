@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 5057896413005996021}
   - component: {fileID: 7754390190397413800}
   - component: {fileID: 3481519554620944538}
+  - component: {fileID: 2774847509340281892}
   m_Layer: 0
   m_Name: RangerPlayer
   m_TagString: Player
@@ -321,6 +322,30 @@ MonoBehaviour:
   smoothing: 0.12
   idleThreshold: 0.15
   teleportSpeed: 20
+--- !u!114 &2774847509340281892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046678081826403756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1638e0f6228910d4cb2490edaac56c44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  round1Clips:
+  - {fileID: 8300000, guid: fa814d67374ed744ea0b38a8d40b2057, type: 3}
+  - {fileID: 8300000, guid: 54b9b74c6b0f18245844af77e67c69f4, type: 3}
+  round2Clips:
+  - {fileID: 8300000, guid: c198d85c6dff6264fb0041fc41335c12, type: 3}
+  - {fileID: 8300000, guid: 5e759101f329e844795a535938fbf392, type: 3}
+  distancePerStep: 1.5
+  volume: 0.7
+  pitchRange: {x: 0.95, y: 1.05}
+  minimumInterval: 0.15
+  minDistance: 2
+  maxDistance: 18
 --- !u!1001 &2258659451929928398
 PrefabInstance:
   m_ObjectHideFlags: 0

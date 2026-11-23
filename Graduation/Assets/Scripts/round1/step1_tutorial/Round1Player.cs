@@ -17,6 +17,11 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
     private bool isRunning;
     private bool jumpRequested;
     private bool isGrounded;
+    public bool CanPlayFootsteps =>
+        isGrounded &&
+        !jumpRequested &&
+        !IsClimbing &&
+        !Round1PauseMenu.InputBlocked;
 
     private Vector3 networkPosition;
     private Quaternion networkRotation;
@@ -25,6 +30,7 @@ public class Round1Player : MonoBehaviourPun, IPunObservable
     private Quaternion spawnRotation;
 
     private float nextBoxPushTime;
+
     public float AnimationSpeed
     {
         get

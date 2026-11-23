@@ -67,6 +67,7 @@ MonoBehaviour:
   - RequestEnding
   - RequestReplay
   - PlayJumpRemote
+  - ReceiveFootstep
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 8709072550478451527}
   - component: {fileID: 8061975565517554781}
   - component: {fileID: 3540789214659297985}
+  - component: {fileID: 5136570630468132771}
   m_Layer: 0
   m_Name: KnightPlayer
   m_TagString: Player
@@ -321,6 +322,38 @@ MonoBehaviour:
   smoothing: 0.12
   idleThreshold: 0.15
   teleportSpeed: 20
+--- !u!114 &5136570630468132771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046678081826403756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1638e0f6228910d4cb2490edaac56c44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  round1Clips:
+  - {fileID: 8300000, guid: 0cf7b4a9d88092a41a569de3d4e12c55, type: 3}
+  - {fileID: 8300000, guid: 83e9906ef2a1c7f4d9dadd6c17c9ac65, type: 3}
+  - {fileID: 8300000, guid: 57219b42978755343bc12c2293d144cc, type: 3}
+  - {fileID: 8300000, guid: 6f41155788ab059498da8c2ef4c25840, type: 3}
+  - {fileID: 8300000, guid: 57219b42978755343bc12c2293d144cc, type: 3}
+  - {fileID: 8300000, guid: 83e9906ef2a1c7f4d9dadd6c17c9ac65, type: 3}
+  round2Clips:
+  - {fileID: 8300000, guid: 0cf7b4a9d88092a41a569de3d4e12c55, type: 3}
+  - {fileID: 8300000, guid: 83e9906ef2a1c7f4d9dadd6c17c9ac65, type: 3}
+  - {fileID: 8300000, guid: 57219b42978755343bc12c2293d144cc, type: 3}
+  - {fileID: 8300000, guid: 6f41155788ab059498da8c2ef4c25840, type: 3}
+  - {fileID: 8300000, guid: 57219b42978755343bc12c2293d144cc, type: 3}
+  - {fileID: 8300000, guid: 83e9906ef2a1c7f4d9dadd6c17c9ac65, type: 3}
+  distancePerStep: 1.5
+  volume: 0.7
+  pitchRange: {x: 0.95, y: 1.05}
+  minimumInterval: 0.15
+  minDistance: 2
+  maxDistance: 18
 --- !u!1001 &2695683823537342916
 PrefabInstance:
   m_ObjectHideFlags: 0
