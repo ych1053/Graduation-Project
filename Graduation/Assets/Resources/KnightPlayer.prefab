@@ -112,6 +112,7 @@ GameObject:
   - component: {fileID: 3540789214659297985}
   - component: {fileID: 5136570630468132771}
   - component: {fileID: 4644272772340514156}
+  - component: {fileID: -6803321220444021569}
   m_Layer: 0
   m_Name: KnightPlayer
   m_TagString: Player
@@ -368,6 +369,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fallGravityMultiplier: 2.5
+--- !u!81 &-6803321220444021569
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3046678081826403756}
+  m_Enabled: 1
 --- !u!1001 &2695683823537342916
 PrefabInstance:
   m_ObjectHideFlags: 0
