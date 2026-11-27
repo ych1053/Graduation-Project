@@ -22,14 +22,14 @@ public class LeverTargetStep : MonoBehaviourPunCallbacks
     [SerializeField] private float riseDuration = 0.6f;
     [SerializeField] private float fallSpeed = 1.8f;
 
-    // Platform ºÎ¸ð ±âÁØÀ¸·Î º® ¾ÈÂÊÀ¸·Î ¼û±æ ¹æÇâ°ú °Å¸®
+    // Platform ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½
     [SerializeField]
     private Vector3 hiddenOffset =
         new Vector3(0f, 0f, -2f);
 
     [SerializeField] private float platformSpeed = 2f;
 
-    // 0: ·¹¹ö ´ë±â, 1: Ç¥Àû È°¼º, 2: ¿Ï·á
+    // 0: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, 1: Ç¥ï¿½ï¿½ È°ï¿½ï¿½, 2: ï¿½Ï·ï¿½
     private int state;
     private double activatedAt;
 
@@ -53,7 +53,7 @@ public class LeverTargetStep : MonoBehaviourPunCallbacks
             platform == null)
         {
             Debug.LogError(
-                "LeverTargetStepÀÇ ¿¬°á Ç×¸ñÀ» È®ÀÎÇÏ¼¼¿ä.",
+                "LeverTargetStepï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.",
                 this
             );
             enabled = false;
@@ -116,7 +116,7 @@ public class LeverTargetStep : MonoBehaviourPunCallbacks
         );
 
         if (distance <= interactionDistance &&
-            Input.GetKeyDown(KeyCode.E))
+            Input.GetKeyDown(KeyCode.F))
         {
             photonView.RPC(
                 nameof(RequestActivate),
@@ -203,10 +203,10 @@ public class LeverTargetStep : MonoBehaviourPunCallbacks
         if (carryBox == null || carryBox.HolderActorNumber != 0)
             return;
 
-        // ¸ÕÀú ¿Ï·á Ã³¸®ÇØ¼­ ¿©·¯ Ãæµ¹ÀÌ ¹ß»ýÇØµµ ÇÑ ¹ø¸¸ ¼º°ø
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ Ã³ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½æµ¹ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Øµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         PublishState(2, activatedAt);
 
-        // ¼Ò¸ðÇü »óÀÚ´Â ÀÌ È£Ãâ·Î ¼ÒÀ¯ ÇØÁ¦ ÈÄ »ç¶óÁü
+        // ï¿½Ò¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ È£ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
         carryBox.RespawnOnMaster();
     }
 
@@ -217,7 +217,7 @@ public class LeverTargetStep : MonoBehaviourPunCallbacks
             state != 1)
             return;
 
-        // ¾Æ·¡¿¡¼­ ¿Ã¶ó¿À´Â µµÁß µ¥½ºÁ¸À» Åë°úÇÒ ¶§´Â ½ÇÆÐÇÏÁö ¾ÊÀ½
+        // ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (PhotonNetwork.Time - activatedAt <
             Mathf.Max(0.05f, riseDuration))
             return;
@@ -227,7 +227,7 @@ public class LeverTargetStep : MonoBehaviourPunCallbacks
 
     private void PublishState(int newState, double startTime)
     {
-        // ¹æÀåÀº Áï½Ã ¹Ý¿µÇØ Áßº¹ ÀÛµ¿À» ¸·À½
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ý¿ï¿½ï¿½ï¿½ ï¿½ßºï¿½ ï¿½Ûµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         ApplyState(newState, startTime);
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(
